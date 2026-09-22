@@ -58,7 +58,6 @@ export function NewSessionView(props: {
                       value={props.workspace.selection.value()}
                       projectRoot={props.workspace.project.root()}
                       workspaces={props.workspace.project.workspaces()}
-                      branch={props.workspace.bar.branch()}
                       onChange={props.workspace.selection.set}
                       onDone={props.input.restoreFocus}
                     />
