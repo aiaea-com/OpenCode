@@ -11,6 +11,7 @@ permissions:
 jobs:
   build-and-publish:
     runs-on: aiaea
+    container: oven/bun:1.3.14
     env:
       NEXUS_BASEURL: ${{ vars.NEXUS_BASEURL }}
       NEXUS_CI_PASSWORD: ${{ secrets.NEXUS_CI_PASSWORD }}
