@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   build-and-publish:
-    runs-on: aiaea
+    runs-on: self-hosted
     env:
       NEXUS_BASEURL: ${{ vars.NEXUS_BASEURL }}
       NEXUS_CI_PASSWORD: ${{ secrets.NEXUS_CI_PASSWORD }}
