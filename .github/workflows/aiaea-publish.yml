@@ -31,7 +31,7 @@ jobs:
       - name: Build Linux OpenCode
         run: |
           set -euo pipefail
-          bun --cwd packages/opencode run build -- --single
+          bun ./packages/opencode/script/build.ts --single
           packages/opencode/dist/opencode-linux-x64/bin/opencode --version
 
       - name: Package launcher
