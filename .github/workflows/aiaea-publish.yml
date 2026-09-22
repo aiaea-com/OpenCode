@@ -16,6 +16,7 @@ jobs:
       NEXUS_BASEURL: ${{ vars.NEXUS_BASEURL }}
       NEXUS_CI_PASSWORD: ${{ secrets.NEXUS_CI_PASSWORD }}
       NEXUS_CI_USERNAME: ${{ vars.NEXUS_CI_USERNAME }}
+      OPENCODE_CHANNEL: latest
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
@@ -49,7 +50,7 @@ jobs:
         run: |
           set -euo pipefail
           version="$(node -p "require('./packages/opencode/package.json').version")"
-          revision="$(git rev-parse --short=12 HEAD)"
+          revision="$(printf %.12s "$GITHUB_SHA")"
           archive="OpenCode.${version}+${revision}.tar.gz"
           mkdir -p dist/launchers/OpenCode
           tar -C packages/opencode/dist/opencode-linux-x64/bin -czf "dist/launchers/OpenCode/${archive}" opencode
