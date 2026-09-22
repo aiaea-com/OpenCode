@@ -3,6 +3,7 @@ name: Aiaea Build And Publish
 on:
   push:
     branches: [cicd]
+    tags: ["v*"]
   workflow_dispatch:
 
 permissions:
@@ -39,7 +40,20 @@ jobs:
           bun typecheck
           bun --cwd packages/app test
 
+      - name: Determine publication target
+        id: publication
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            echo "nexus-repository=raw-prod-hosted" >> "$GITHUB_OUTPUT"
+            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "nexus-repository=raw-dev-hosted" >> "$GITHUB_OUTPUT"
+
       - name: Build Linux OpenCode
+        env:
+          OPENCODE_VERSION: ${{ steps.publication.outputs.version }}
         run: |
           set -euo pipefail
           bun ./packages/opencode/script/build.ts --single
@@ -47,9 +61,11 @@ jobs:
 
       - name: Package launcher
         id: package
+        env:
+          OPENCODE_VERSION: ${{ steps.publication.outputs.version }}
         run: |
           set -euo pipefail
-          version="$(node -p "require('./packages/opencode/package.json').version")"
+          version="${OPENCODE_VERSION:-$(node -p "require('./packages/opencode/package.json').version")}"
           revision="$(printf %.12s "$GITHUB_SHA")"
           archive="OpenCode.${version}+${revision}.tar.gz"
           mkdir -p dist/launchers/OpenCode
@@ -71,4 +87,4 @@ jobs:
           test -n "$NEXUS_BASEURL"
           test -n "$NEXUS_CI_USERNAME"
           test -n "$NEXUS_CI_PASSWORD"
-          curl --fail --show-error --user "$NEXUS_CI_USERNAME:$NEXUS_CI_PASSWORD" --upload-file "dist/launchers/OpenCode/${ARCHIVE}" "$NEXUS_BASEURL/repository/raw-dev-hosted/launchers/OpenCode/${ARCHIVE}"
+          curl --fail --show-error --user "$NEXUS_CI_USERNAME:$NEXUS_CI_PASSWORD" --upload-file "dist/launchers/OpenCode/${ARCHIVE}" "$NEXUS_BASEURL/repository/${{ steps.publication.outputs.nexus-repository }}/launchers/OpenCode/${ARCHIVE}"
