@@ -28,6 +28,8 @@ export function PromptWorkspaceSelector(props: {
   }
   const workspaceLabel = (workspace: string) => {
     if (workspace === "main" || workspace === props.projectRoot) return "main"
+    const prefix = `${props.projectRoot}-`
+    if (workspace.startsWith(prefix)) return workspace.slice(prefix.length)
     return workspace
   }
   const selectedWorkspace = () => props.workspaces.find((workspace) => workspace.directory === props.value)
@@ -50,15 +52,17 @@ export function PromptWorkspaceSelector(props: {
               <Icon name="branch" size="small" class="shrink-0 text-v2-icon-icon-muted" />
             </Show>
           </Show>
-          <span class="min-w-0 truncate text-v2-text-text-muted">{label()}</span>
-          <Show when={selectedWorkspace()?.branch}>
-            {(branch) => (
-              <span class="flex min-w-0 items-center gap-1.5 text-v2-text-text-muted">
-                <Icon name="branch" size="small" class="shrink-0 text-v2-icon-icon-muted" />
-                <span class="truncate">{branch()}</span>
-              </span>
-            )}
-          </Show>
+          <span class="flex min-w-0 flex-1 items-center gap-1.5 text-v2-text-text-muted">
+            <span class="shrink-0">{label()}</span>
+            <Show when={selectedWorkspace()?.branch}>
+              {(branch) => (
+                <>
+                  <Icon name="branch" size="small" class="shrink-0 text-v2-icon-icon-muted" />
+                  <span class="min-w-0 truncate">{branch()}</span>
+                </>
+              )}
+            </Show>
+          </span>
           <Icon name="chevron-down" size="small" class="shrink-0 text-v2-icon-icon-muted" />
         </MenuV2.Trigger>
         <MenuV2.Portal>
@@ -83,15 +87,17 @@ export function PromptWorkspaceSelector(props: {
                   {(workspace) => (
                     <MenuV2.Item onSelect={() => select(workspace.directory)}>
                       <Icon name="folder" size="small" />
-                      <span class="min-w-0 truncate text-v2-text-text-base">
-                        {workspaceLabel(workspace.directory)}
+                      <span class="flex min-w-0 flex-1 items-center gap-1.5 text-v2-text-text-base">
+                        <span class="shrink-0">{workspaceLabel(workspace.directory)}</span>
+                        <Show when={workspace.branch}>
+                          {(branch) => (
+                            <>
+                              <Icon name="branch" size="small" class="shrink-0" />
+                              <span class="min-w-0 truncate">{branch()}</span>
+                            </>
+                          )}
+                        </Show>
                       </span>
-                      <Show when={workspace.branch}>
-                        <span class="flex min-w-0 items-center gap-1.5 text-v2-text-text-base">
-                          <Icon name="branch" size="small" class="shrink-0" />
-                          <span class="truncate">{workspace.branch}</span>
-                        </span>
-                      </Show>
                       <Show when={selected() === workspace.directory}>
                         <Icon name="check" size="small" class="shrink-0" />
                       </Show>
