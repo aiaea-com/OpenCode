@@ -28,8 +28,6 @@ export function PromptWorkspaceSelector(props: {
   }
   const workspaceLabel = (workspace: string) => {
     if (workspace === "main" || workspace === props.projectRoot) return "main"
-    const prefix = `${props.projectRoot}-`
-    if (workspace.startsWith(prefix)) return workspace.slice(prefix.length)
     return workspace
   }
   const selectedWorkspace = () => props.workspaces.find((workspace) => workspace.directory === props.value)
@@ -52,10 +50,10 @@ export function PromptWorkspaceSelector(props: {
               <Icon name="branch" size="small" class="shrink-0 text-v2-icon-icon-muted" />
             </Show>
           </Show>
-          <span class="min-w-0 truncate text-v2-text-text-base">{label()}</span>
+          <span class="min-w-0 truncate text-v2-text-text-muted">{label()}</span>
           <Show when={selectedWorkspace()?.branch}>
             {(branch) => (
-              <span class="flex min-w-0 items-center gap-1.5 text-v2-text-text-base">
+              <span class="flex min-w-0 items-center gap-1.5 text-v2-text-text-muted">
                 <Icon name="branch" size="small" class="shrink-0 text-v2-icon-icon-muted" />
                 <span class="truncate">{branch()}</span>
               </span>
