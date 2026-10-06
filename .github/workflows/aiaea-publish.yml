@@ -50,6 +50,7 @@ jobs:
             exit 0
           fi
           echo "nexus-repository=raw-dev-hosted" >> "$GITHUB_OUTPUT"
+          echo "version=$(node -p "require('./packages/opencode/package.json').version")" >> "$GITHUB_OUTPUT"
 
       - name: Build Linux OpenCode
         env:
