@@ -62,9 +62,11 @@ jobs:
         env:
           OPENCODE_VERSION: ${{ steps.publication.outputs.version }}
         run: |
-          set -euo pipefail
+          set -euxo pipefail
           bun ./packages/cli/script/build.ts --single
-          test "$(packages/cli/dist/cli-linux-x64/bin/opencode --version)" = "$OPENCODE_VERSION"
+          actual_version="$(NO_COLOR=1 packages/cli/dist/cli-linux-x64/bin/opencode --version)"
+          printf 'Expected executable version: %s; observed: %s\n' "$OPENCODE_VERSION" "$actual_version"
+          test "$actual_version" = "$OPENCODE_VERSION"
           sha256sum packages/cli/dist/cli-linux-x64/bin/opencode
 
       - name: Package launcher
