@@ -15,9 +15,14 @@ jobs:
   check:
     name: typecheck
     runs-on: blacksmith-4vcpu-ubuntu-2404
+    container:
+      image: darthjurassic/sdk@sha256:cd304eb082de4e26521716d78bffca3d613e39ae2f792684e6ccf86380e17f05
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout repository
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           # A pull request checks out its merge into the current base; the first parent is that base.
           fetch-depth: 2
